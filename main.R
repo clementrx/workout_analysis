@@ -1,3 +1,4 @@
 library(quarto)
+library(here)
 
-quarto_render("report.qmd")
+system(paste0('quarto.cmd render ', here("report.qmd")))
