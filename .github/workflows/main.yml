@@ -23,6 +23,7 @@ jobs:
           R -e 'install.packages("highcharter")'
           R -e 'install.packages("gt")'
           R -e 'install.packages("gtExtras")'
+          R -e 'install.packages("remotes")'
 
       - name: Install Quarto
         run: |
