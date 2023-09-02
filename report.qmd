@@ -45,10 +45,12 @@ library(highcharter)
 library(gt)
 library(gtExtras)
 
+gs4_deauth()
+
 source(here('functions.R'))
 
 #Read google sheets data into R
-df <- read_sheet('https://docs.google.com/spreadsheets/d/1t7HI7_cj0mcXJ_FD4tC8D1PVJFXoHDsaM9NSqX5sk1s/edit?hl=fr#gid=0')
+df <- read_sheet('https://docs.google.com/spreadsheets/d/1t7HI7_cj0mcXJ_FD4tC8D1PVJFXoHDsaM9NSqX5sk1s/edit?usp=sharing')
 
 # Appliquer la fonction pour séparer les valeurs
 donnees_separees <- separer_valeurs(df, "Répétitions")
