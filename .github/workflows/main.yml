@@ -1,7 +1,7 @@
 name: MAJ du reporting
 on: 
-  push:
-    branches: master
+  schedule:
+    - cron: '*/10 * * * *'
     
 jobs:
   autoscrape:
