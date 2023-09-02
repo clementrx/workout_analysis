@@ -1,27 +1,31 @@
 name: Mettre à jour le reporting
-on: push
+on: 
+  push:
+    branches: master
+    
 jobs:
-  render:
-    runs-on: windows-latest
+  autoscrape:
+    runs-on: macos-latest
+    
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up R
-        uses: r-lib/actions/setup-r@v1
-      - name: Set up pandoc
-        uses: r-lib/actions/setup-pandoc@master
-      - name: Install dependencies
+      - uses: actions/checkout@master
+      - uses: r-lib/actions/setup-r@master
+      
+      - name: Install packages
         run: |
-          install.packages("quarto", type = "win.binary")
-          install.packages("dplyr", type = "win.binary")
-          install.packages("tidyr", type = "win.binary")
-          install.packages("googlesheets4", type = "win.binary")
-          install.packages("here", type = "win.binary")
-          install.packages("highcharter", type = "win.binary")
-          install.packages("gt", type = "win.binary")
-          install.packages("gtExtras", type = "win.binary")
-        shell: Rscript {0}
+
+          R -e 'install.packages("quarto")'
+          R -e 'install.packages("dplyr")'
+          R -e 'install.packages("tidyr")'
+          R -e 'install.packages("googlesheets4")'
+          R -e 'install.packages("here")'
+          R -e 'install.packages("highcharter")'
+          R -e 'install.packages("gt")'
+          R -e 'install.packages("gtExtras")'
+    
       - name: Script
         run: Rscript main.R
+        
       - name: Commit files
         run: |
           git config --local user.name github-actions
