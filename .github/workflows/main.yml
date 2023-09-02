@@ -23,6 +23,10 @@ jobs:
           R -e 'install.packages("highcharter")'
           R -e 'install.packages("gt")'
           R -e 'install.packages("gtExtras")'
+
+      - name: Install Quarto
+        run: |
+          R -e 'remotes::install_github("quarto-dev/quarto")'
     
       - name: Script
         run: Rscript main.R
