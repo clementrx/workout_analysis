@@ -1,5 +1,7 @@
 name: MAJ du reporting
-on: push
+on:
+ schedule: 
+   - cron: '15 12 * * *'
     
 jobs:
   autoscrape:
