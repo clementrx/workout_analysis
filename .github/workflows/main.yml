@@ -1,7 +1,7 @@
 name: MAJ du reporting
 on: 
   schedule:
-    - cron: '00 10 * * *'
+    - cron: '38 11 * * *'
     
 jobs:
   autoscrape:
@@ -33,6 +33,8 @@ jobs:
         run: |
           git config --local user.name github-actions
           git config --local user.email "actions@github.com"
+          git fetch origin master
+          git pull origin master
           git add .
           git commit -am "commit on $(date)"
           git push origin master
