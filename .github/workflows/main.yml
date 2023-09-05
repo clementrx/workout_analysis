@@ -22,8 +22,8 @@ jobs:
           R -e 'install.packages("googlesheets4")'
           R -e 'install.packages("here")'
           R -e 'install.packages("highcharter")'
-          R -e 'install.packages("gt")'
-          R -e 'install.packages("gtExtras")'
+          R -e 'install.packages("reactable")'
+          R -e 'install.packages("sparkline")'
           R -e 'install.packages("remotes")'
     
       - name: Script

@@ -42,8 +42,9 @@ execute:
 library(googlesheets4)
 library(here)
 library(highcharter)
-library(gt)
-library(gtExtras)
+library(reactable)
+library(sparkline)
+# library(gtExtras)
 
 gs4_deauth()
 
@@ -51,6 +52,10 @@ source(here('functions.R'))
 
 #Read google sheets data into R
 df <- read_sheet('https://docs.google.com/spreadsheets/d/1t7HI7_cj0mcXJ_FD4tC8D1PVJFXoHDsaM9NSqX5sk1s/edit?usp=sharing')
+
+df = df %>%
+  mutate(Exercice = tolower(Exercice))
+
 
 # Appliquer la fonction pour séparer les valeurs
 donnees_separees <- separer_valeurs(df, "Répétitions")
@@ -167,11 +172,42 @@ averages <- data %>%
              '20%' = max*0.2
       )
 
-averages %>% 
-  gt() %>% 
-  gt_theme_espn() %>% 
-  gt_highlight_cols(columns = 1) %>% 
-  gt_highlight_cols(columns = 2, alpha = 0.4)
+# averages_join <- data %>%
+#       group_by(Exercice) %>%
+#       summarise(Poids_list = list(Poids)) %>%
+#       ungroup() 
+
+# averages %>% 
+#   gt() %>% 
+#   gt_theme_espn() %>% 
+#   gt_highlight_cols(columns = 1) %>% 
+#   gt_highlight_cols(columns = 2, alpha = 0.4)
+# 
+# averages_t = averages %>% left_join(averages_join)
+
+reactable(averages,
+          minRows = 3,
+          defaultPageSize = 3,
+          striped = TRUE,
+          showPageInfo = FALSE,
+          paginationType = "simple",
+           columns = list(
+             Exercice = colDef(filterable = TRUE, 
+                               sticky = "left", 
+                               style =  list(backgroundColor = "#80bcd8")),
+             max = colDef(style =  list(backgroundColor = "#5CD1D1"),
+                          html = TRUE,
+                          header = JS('function(column) {
+                                      return column.name + `<div style="color: #737373">kg</div>`
+                                      }'))
+             )
+           # columnGroups = list(
+           #   colGroup("1RM", columns = c("max"), sticky = "left"),
+           #   colGroup("%1RM", columns = c("90%", "80%", "70%", '60%', '50%', '40%', '30%', '20%'), sticky = "left")
+           #   )
+
+          )
+
 
 ```
 
@@ -215,21 +251,65 @@ gethc <- function(i) {
   # cat("\n\n")
 }
 
-list_of_highcharts <- list()
+get_stat <- function(i){
+  
+  df_stat = data %>%
+  filter(Exercice == i) 
+  
+  df_stat_agg <- df_stat %>%
+  summarise(Poids = list(Poids)) %>%
+  mutate(boxplot = NA, sparkline = NA)
 
-for (i in unique(data$Exercice)) {
-  
-  list_of_highcharts[[i]] <- gethc(i)
-  
+reactable(df_stat_agg, columns = list(
+  Poids = colDef(cell = function(values) {
+    sparkline(values, type = "bar", chartRangeMin = 0, chartRangeMax = max(df_stat$Poids))
+  }),
+  boxplot = colDef(cell = function(value, index) {
+    sparkline(df_stat_agg$Poids[[index]], type = "box")
+  }),
+  sparkline = colDef(cell = function(value, index) {
+    sparkline(df_stat_agg$Poids[[index]])
+  })
+))
+
 }
 
+get_stat_day <- function(i){
+  
+  df_stat = data %>%
+  filter(Exercice == i) 
+  
+reactable(df_stat_agg, columns = list(
+  Poids = colDef(cell = function(values) {
+    sparkline(values, type = "bar", chartRangeMin = 0, chartRangeMax = max(df_stat$Poids))
+  }),
+  boxplot = colDef(cell = function(value, index) {
+    sparkline(df_stat_agg$Poids[[index]], type = "box")
+  }),
+  sparkline = colDef(cell = function(value, index) {
+    sparkline(df_stat_agg$Poids[[index]])
+  })
+))
+
+}
+
+ex = sort(unique(data$Exercice))
+
+# list_of_highcharts <- list()
 tgls <- list()
 
-for(i in unique(data$Exercice)){
+# for (i in ex) {
+#   
+#   list_of_highcharts[[i]] <- gethc(i)
+#   
+# }
+
+for(i in ex){
   tgls[[i]] <- list(tags$h3(i),
                     tags$div(id = 'mon-graphique',
                              # tags$figure(list_of_highcharts[[i]]))
-                             list_of_highcharts[[i]])
+                             gethc(i),
+                             get_stat(i))
                     )
   }
 
