@@ -276,12 +276,12 @@ reactable(df_stat_agg, columns = list(
 
 get_stat_day <- function(i){
   
-  df_stat = data %>%
+  df_stat_agg = data %>%
   filter(Exercice == i) 
   
 reactable(df_stat_agg, columns = list(
   Poids = colDef(cell = function(values) {
-    sparkline(values, type = "bar", chartRangeMin = 0, chartRangeMax = max(df_stat$Poids))
+    sparkline(values, type = "bar", chartRangeMin = 0, chartRangeMax = max(df_stat_agg$Poids))
   }),
   boxplot = colDef(cell = function(value, index) {
     sparkline(df_stat_agg$Poids[[index]], type = "box")
