@@ -20,6 +20,7 @@ jobs:
           R -e 'install.packages("dplyr")'
           R -e 'install.packages("tidyr")'
           R -e 'install.packages("googlesheets4")'
+          R -e 'install.packages("igraph")'
           R -e 'install.packages("here")'
           R -e 'install.packages("highcharter")'
           R -e 'install.packages("reactable")'
